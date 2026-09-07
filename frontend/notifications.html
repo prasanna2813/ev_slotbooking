@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Notifications</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            ⚡ EVCharge
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="stations.html">
+                ⚡ Charging Stations
+            </a>
+
+            <a href="bookings.html">
+                📅 My Bookings
+            </a>
+
+            <a href="notifications.html" class="active">
+                🔔 Notifications
+            </a>
+
+        </nav>
+
+        <button id="logoutBtn" class="logout-btn">
+            🚪 Logout
+        </button>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <span class="dashboard-label">
+                    EVCHARGE
+                </span>
+
+                <h1>
+                    Notifications
+                </h1>
+
+                <p>
+                    Stay updated about your charging activity.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <section class="dashboard-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Your Notifications
+                    </h2>
+
+                    <p class="panel-subtitle">
+                        Booking confirmations, reminders and queue updates.
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="markAllBtn"
+                    class="station-book-btn"
+                >
+                    ✓ Mark All as Read
+                </button>
+
+            </div>
+
+
+            <div id="notificationLoading">
+
+                <p>
+                    Loading notifications...
+                </p>
+
+            </div>
+
+
+            <div
+                id="notificationList"
+                class="notification-page-list"
+            ></div>
+
+
+            <div
+                id="emptyNotifications"
+                class="empty-state"
+                style="display:none;"
+            >
+
+                <h3>
+                    No notifications
+                </h3>
+
+                <p>
+                    You're all caught up!
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/notifications.js"></script>
+
+</body>
+
+</html>

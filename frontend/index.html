@@ -1,0 +1,457 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Smart EV Charging</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+
+    <header class="navbar">
+
+        <div class="logo">
+            <span>⚡</span> EVCharge
+        </div>
+
+        <nav class="nav-links">
+            <a href="#home">Home</a>
+            <a href="stations.html">Stations</a>
+            <a href="#how">How It Works</a>
+            <a href="#features">Features</a>
+        </nav>
+
+        <button class="login-btn" id="loginBtn">
+            Login
+        </button>
+
+    </header>
+
+
+    <!-- Hero -->
+
+    <section class="hero" id="home">
+
+        <div class="hero-left">
+
+            <div class="badge">
+                ⚡ Smart EV Charging Platform
+            </div>
+
+            <h1>
+                Charge Smarter.<br>
+                <span>Drive Further.</span>
+            </h1>
+
+            <p>
+                Find nearby EV charging stations, check real-time
+                availability, reserve your slot and skip the waiting queue.
+            </p>
+
+            <div class="hero-buttons">
+
+                <button class="primary-btn" id="findStationBtn">
+                    Find a Charging Station
+                    <span>→</span>
+                </button>
+
+                <button class="secondary-btn" id="bookSlotBtn">
+                    Book a Slot
+                </button>
+
+            </div>
+
+            <div class="hero-stats">
+
+                <div>
+                    <strong>24/7</strong>
+                    <small>Charging Access</small>
+                </div>
+
+                <div>
+                    <strong>Fast</strong>
+                    <small>Slot Booking</small>
+                </div>
+
+                <div>
+                    <strong>Smart</strong>
+                    <small>Recommendations</small>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="hero-right">
+
+            <div class="charging-card">
+
+                <div class="card-top">
+                    <span>⚡ EV Charging</span>
+                    <span class="online">
+                        ● Available
+                    </span>
+                </div>
+
+                <div class="battery">
+
+                    <div class="battery-head"></div>
+
+                    <div class="battery-body">
+                        <div class="battery-level"></div>
+                    </div>
+
+                </div>
+
+                <h2>78%</h2>
+
+                <p>Battery Ready</p>
+
+                <div class="charging-info">
+
+                    <div>
+                        <span>Charging Type</span>
+                        <strong>Fast Charging</strong>
+                    </div>
+
+                    <div>
+                        <span>Estimated Time</span>
+                        <strong>32 min</strong>
+                    </div>
+
+                </div>
+
+                <button class="card-btn">
+                    View Available Slots →
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Quick Search -->
+
+    <section class="search-section">
+
+        <div class="search-box">
+
+            <div class="search-item">
+                <span class="search-icon">📍</span>
+
+                <div>
+                    <small>Location</small>
+                    <strong>Find stations near you</strong>
+                </div>
+            </div>
+
+            <div class="search-divider"></div>
+
+            <div class="search-item">
+                <span class="search-icon">🔋</span>
+
+                <div>
+                    <small>Vehicle Battery</small>
+                    <strong>Check charging needs</strong>
+                </div>
+            </div>
+
+            <button class="search-btn">
+                Search Stations
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- Features -->
+
+    <section class="section" id="features">
+
+        <div class="section-heading">
+
+            <span>WHY EVCHARGE</span>
+
+            <h2>
+                Everything you need<br>
+                for a better charging experience.
+            </h2>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">📍</div>
+
+                <h3>Nearby Stations</h3>
+
+                <p>
+                    Discover EV charging stations close to your
+                    current location using smart distance calculation.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">📅</div>
+
+                <h3>Easy Slot Booking</h3>
+
+                <p>
+                    Reserve your preferred charging time and
+                    avoid unnecessary waiting.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">⏳</div>
+
+                <h3>Smart Queue</h3>
+
+                <p>
+                    Join the queue when stations are full and
+                    receive notifications when a slot becomes available.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">🔔</div>
+
+                <h3>Smart Notifications</h3>
+
+                <p>
+                    Get booking confirmations, charging reminders
+                    and queue availability notifications.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Station Preview -->
+
+    <section class="stations-section" id="stations">
+
+        <div class="section-heading center">
+
+            <span>CHARGING NETWORK</span>
+
+            <h2>Find your charging station</h2>
+
+            <p>
+                Choose from nearby charging stations based on
+                availability, distance and charging type.
+            </p>
+
+        </div>
+
+
+        <div class="station-grid">
+
+            <div class="station-card">
+
+                <div class="station-image">
+                    <span>⚡</span>
+
+                    <div class="available-tag">
+                        ● 8 Slots Available
+                    </div>
+                </div>
+
+                <div class="station-content">
+
+                    <h3>EVCharge Tirupati</h3>
+
+                    <p>📍 Tirupati, Andhra Pradesh</p>
+
+                    <div class="station-details">
+                        <span>⚡ Fast Charging</span>
+                        <span>₹12 / unit</span>
+                    </div>
+
+                    <button>
+                        View Station →
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="station-card">
+
+                <div class="station-image second">
+                    <span>⚡</span>
+
+                    <div class="available-tag">
+                        ● 5 Slots Available
+                    </div>
+                </div>
+
+                <div class="station-content">
+
+                    <h3>GreenCharge Tirupati</h3>
+
+                    <p>📍 Renigunta Road, Tirupati</p>
+
+                    <div class="station-details">
+                        <span>⚡ Fast Charging</span>
+                        <span>₹10 / unit</span>
+                    </div>
+
+                    <button>
+                        View Station →
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- How It Works -->
+
+    <section class="how-section" id="how">
+
+        <div class="section-heading center">
+
+            <span>SIMPLE PROCESS</span>
+
+            <h2>Charge in 4 simple steps</h2>
+
+        </div>
+
+
+        <div class="steps">
+
+            <div class="step">
+
+                <div class="step-number">01</div>
+
+                <h3>Find a Station</h3>
+
+                <p>
+                    Search for nearby EV charging stations.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">02</div>
+
+                <h3>Check Availability</h3>
+
+                <p>
+                    View available slots and estimated waiting time.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">03</div>
+
+                <h3>Book Your Slot</h3>
+
+                <p>
+                    Select a convenient time and reserve your slot.
+                </p>
+
+            </div>
+
+
+            <div class="step">
+
+                <div class="step-number">04</div>
+
+                <h3>Charge & Go</h3>
+
+                <p>
+                    Arrive at the station and charge your vehicle.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- CTA -->
+
+    <section class="cta">
+
+        <div>
+
+            <span>READY TO CHARGE?</span>
+
+            <h2>
+                Your next charge is<br>
+                just one click away.
+            </h2>
+
+        </div>
+
+        <button id="ctaButton">
+            Start Booking →
+        </button>
+
+    </section>
+
+
+    <!-- Footer -->
+
+    <footer>
+
+        <div class="footer-logo">
+            ⚡ EVCharge
+        </div>
+
+        <p>
+            Smart EV Charging Slot Booking System
+        </p>
+
+        <span>
+            © 2026 EVCharge. All rights reserved.
+        </span>
+
+    </footer>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
+```

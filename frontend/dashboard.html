@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="dashboard-logo">
+            ⚡ EVCharge
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html" class="active">
+                🏠 Dashboard
+            </a>
+
+            <a href="stations.html">
+                📍 Charging Stations
+            </a>
+
+            <a href="bookings.html">
+                📅 My Bookings
+            </a>
+
+            <a href="notifications.html">
+                🔔 Notifications
+            </a>
+
+        </nav>
+
+        <button id="logoutBtn" class="logout-btn">
+            ↪ Logout
+        </button>
+
+    </aside>
+
+
+    <!-- Main -->
+
+    <main class="dashboard-main">
+
+        <!-- Topbar -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+                <p class="welcome-small">
+                    EVCHARGE DASHBOARD
+                </p>
+
+                <h1 id="welcomeName">
+                    Welcome back 👋
+                </h1>
+            </div>
+
+            <div class="profile-circle" id="profileInitial">
+                P
+            </div>
+
+        </div>
+
+
+        <!-- Stats -->
+
+        <section class="dashboard-stats">
+
+            <div class="dashboard-stat battery-stat">
+
+                <div class="stat-icon">
+                    🔋
+                </div>
+
+                <div>
+                    <span>Current Battery</span>
+                    <strong id="batteryValue">--%</strong>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    ⚡
+                </div>
+
+                <div>
+                    <span>Charging Type</span>
+                    <strong>Fast Charging</strong>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    📅
+                </div>
+
+                <div>
+                    <span>My Bookings</span>
+                    <strong id="bookingCount">0</strong>
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    🔔
+                </div>
+
+                <div>
+                    <span>Notifications</span>
+                    <strong id="notificationCount">0</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Main Grid -->
+
+        <section class="dashboard-grid">
+
+            <!-- Stations -->
+
+            <div class="dashboard-panel stations-panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span>NEARBY</span>
+                        <h2>Charging Stations</h2>
+                    </div>
+
+                    <button id="viewAllStations">
+                        View All →
+                    </button>
+
+                </div>
+
+
+                <div id="stationList" class="dashboard-stations">
+
+                    <div class="loading">
+                        Loading charging stations...
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Profile / Battery -->
+
+            <div class="dashboard-panel battery-panel">
+
+                <div class="panel-header">
+
+                    <div>
+                        <span>YOUR VEHICLE</span>
+                        <h2>Vehicle Status</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="vehicle-info">
+
+                    <div class="vehicle-icon">
+                        🚗
+                    </div>
+
+                    <div>
+                        <h3 id="vehicleModel">
+                            Loading...
+                        </h3>
+
+                        <p id="vehicleNumber">
+                            ---
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="battery-large">
+
+                    <div class="battery-large-top">
+                        <span>Battery Level</span>
+
+                        <strong id="batteryLarge">
+                            --%
+                        </strong>
+                    </div>
+
+                    <div class="battery-track">
+
+                        <div
+                            class="battery-progress"
+                            id="batteryProgress"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="recommend-btn"
+                    id="recommendBtn"
+                >
+                    ⚡ Find Best Charging Station
+                </button>
+
+                <div
+                    id="recommendation"
+                    class="recommendation"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Notifications -->
+
+        <section class="dashboard-panel notifications-panel">
+
+            <div class="panel-header">
+
+                <div>
+                    <span>UPDATES</span>
+                    <h2>Recent Notifications</h2>
+                </div>
+
+                <button id="viewNotifications">
+                    View All →
+                </button>
+
+            </div>
+
+
+            <div id="notificationList">
+
+                <div class="loading">
+                    Loading notifications...
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/dashboard.js"></script>
+
+</body>
+
+</html>

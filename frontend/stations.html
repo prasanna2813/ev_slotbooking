@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Charging Stations</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dashboard-page">
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar">
+
+        <div class="dashboard-logo">
+            ⚡ EVCharge
+        </div>
+
+        <nav class="sidebar-nav">
+
+            <a href="dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="stations.html" class="active">
+                📍 Charging Stations
+            </a>
+
+            <a href="bookings.html">
+                📅 My Bookings
+            </a>
+
+            <a href="notifications.html">
+                🔔 Notifications
+            </a>
+
+        </nav>
+
+        <button id="logoutBtn" class="logout-btn">
+            ↪ Logout
+        </button>
+
+    </aside>
+
+
+    <!-- Main Content -->
+
+    <main class="dashboard-main">
+
+        <div class="dashboard-topbar">
+
+            <div>
+                <p class="welcome-small">
+                    EVCHARGE NETWORK
+                </p>
+
+                <h1>Charging Stations</h1>
+            </div>
+
+            <div class="profile-circle">
+                P
+            </div>
+
+        </div>
+
+
+        <!-- Search / Nearby -->
+
+        <section class="station-search-panel">
+
+            <div>
+
+                <span>FIND A STATION</span>
+
+                <h2>Charging stations near you</h2>
+
+                <p>
+                    Discover available EV charging stations
+                    and reserve your preferred slot.
+                </p>
+
+            </div>
+
+            <button id="nearbyBtn">
+                📍 Find Nearby Stations
+            </button>
+
+        </section>
+
+
+        <!-- Station List -->
+
+        <section class="all-stations-section">
+
+            <div class="station-page-heading">
+
+                <div>
+                    <span>AVAILABLE LOCATIONS</span>
+
+                    <h2>All Charging Stations</h2>
+                </div>
+
+                <div id="stationCount">
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <div
+                id="stationsContainer"
+                class="professional-station-grid"
+            >
+
+                <div class="station-loading">
+                    Loading charging stations...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Nearby Result -->
+
+        <section
+            id="nearbySection"
+            class="nearby-section"
+        >
+
+            <div class="station-page-heading">
+
+                <div>
+                    <span>SMART SEARCH</span>
+
+                    <h2>Nearby Stations</h2>
+                </div>
+
+            </div>
+
+            <div
+                id="nearbyContainer"
+                class="professional-station-grid"
+            ></div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/stations.js"></script>
+
+</body>
+
+</html>
