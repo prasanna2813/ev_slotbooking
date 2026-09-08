@@ -263,7 +263,7 @@ npm start
 
 The backend will run on:
 
-http://localhost:5000
+https://ev-slotbooking-1.onrender.com
 🌐 Run the Frontend
 
 Open the frontend folder and run the application using a local development server such as Live Server in VS Code.

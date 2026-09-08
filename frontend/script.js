@@ -115,7 +115,7 @@ if (loginForm) {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/login",
+                    "https://ev-slotbooking-1.onrender.com/api/auth/login",
                     {
                         method: "POST",
 
@@ -256,7 +256,7 @@ if (registerForm) {
             try {
 
                 const response = await fetch(
-                    "http://localhost:5000/api/auth/register",
+                    "https://ev-slotbooking-1.onrender.com/api/auth/register",
                     {
                         method: "POST",
 
