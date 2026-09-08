@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
@@ -12,23 +11,59 @@ const {
 } = require("../controllers/stationController");
 
 const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
-// Create Charging Station
-router.post("/", authMiddleware, createStation);
 
-// Get All Charging Stations
-router.get("/", authMiddleware, getStations);
+// ========================================
+// USER ROUTES
+// ========================================
 
-// Get Nearby Charging Stations
-router.get("/nearby", authMiddleware, getNearbyStations);
+// Get all charging stations
+router.get(
+    "/",
+    authMiddleware,
+    getStations
+);
 
-// Smart Station Recommendation
-router.get("/recommend", authMiddleware, recommendStation);
+// Get nearby charging stations
+router.get(
+    "/nearby",
+    authMiddleware,
+    getNearbyStations
+);
 
-// Get Single Charging Station
-router.get("/:id", authMiddleware, getStationById);
+// Get recommended charging station
+router.get(
+    "/recommend",
+    authMiddleware,
+    recommendStation
+);
 
-// Update Charging Station
-router.put("/:id", authMiddleware, updateStation);
+// Get station by ID
+router.get(
+    "/:id",
+    authMiddleware,
+    getStationById
+);
+
+
+// ========================================
+// ADMIN ROUTES
+// ========================================
+
+// Create new charging station
+router.post(
+    "/",
+    adminMiddleware,
+    createStation
+);
+
+// Update charging station
+router.put(
+    "/:id",
+    adminMiddleware,
+    updateStation
+);
+
 
 module.exports = router;

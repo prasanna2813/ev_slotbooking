@@ -56,6 +56,7 @@
         <div class="dashboard-topbar">
 
             <div>
+
                 <p class="welcome-small">
                     EVCHARGE DASHBOARD
                 </p>
@@ -63,10 +64,94 @@
                 <h1 id="welcomeName">
                     Welcome back 👋
                 </h1>
+
             </div>
 
-            <div class="profile-circle" id="profileInitial">
-                P
+
+            <!-- Profile -->
+
+            <div class="profile-wrapper">
+
+                <button
+                    class="profile-circle"
+                    id="profileInitial"
+                    type="button"
+                >
+                    P
+                </button>
+
+
+                <!-- Profile Dropdown -->
+
+                <div
+                    class="profile-dropdown"
+                    id="profileDropdown"
+                >
+
+                    <div class="profile-dropdown-header">
+
+                        <div
+                            class="profile-dropdown-avatar"
+                            id="profileDropdownInitial"
+                        >
+                            P
+                        </div>
+
+
+                        <div>
+
+                            <h3 id="profileDropdownName">
+                                Loading...
+                            </h3>
+
+                            <p id="profileDropdownEmail">
+                                Loading...
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="profile-dropdown-details">
+
+                        <div>
+
+                            <span>
+                                🚗 Vehicle
+                            </span>
+
+                            <strong id="profileDropdownVehicle">
+                                ---
+                            </strong>
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                🔋 Battery
+                            </span>
+
+                            <strong id="profileDropdownBattery">
+                                --%
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        id="profileLogoutBtn"
+                        class="profile-logout-btn"
+                    >
+                        ↪ Logout
+                    </button>
+
+                </div>
+
             </div>
 
         </div>
@@ -83,8 +168,15 @@
                 </div>
 
                 <div>
-                    <span>Current Battery</span>
-                    <strong id="batteryValue">--%</strong>
+
+                    <span>
+                        Current Battery
+                    </span>
+
+                    <strong id="batteryValue">
+                        --%
+                    </strong>
+
                 </div>
 
             </div>
@@ -97,8 +189,15 @@
                 </div>
 
                 <div>
-                    <span>Charging Type</span>
-                    <strong>Fast Charging</strong>
+
+                    <span>
+                        Charging Type
+                    </span>
+
+                    <strong>
+                        Fast Charging
+                    </strong>
+
                 </div>
 
             </div>
@@ -111,8 +210,15 @@
                 </div>
 
                 <div>
-                    <span>My Bookings</span>
-                    <strong id="bookingCount">0</strong>
+
+                    <span>
+                        My Bookings
+                    </span>
+
+                    <strong id="bookingCount">
+                        0
+                    </strong>
+
                 </div>
 
             </div>
@@ -125,8 +231,15 @@
                 </div>
 
                 <div>
-                    <span>Notifications</span>
-                    <strong id="notificationCount">0</strong>
+
+                    <span>
+                        Notifications
+                    </span>
+
+                    <strong id="notificationCount">
+                        0
+                    </strong>
+
                 </div>
 
             </div>
@@ -138,16 +251,25 @@
 
         <section class="dashboard-grid">
 
-            <!-- Stations -->
+
+            <!-- Charging Stations -->
 
             <div class="dashboard-panel stations-panel">
 
                 <div class="panel-header">
 
                     <div>
-                        <span>NEARBY</span>
-                        <h2>Charging Stations</h2>
+
+                        <span>
+                            NEARBY
+                        </span>
+
+                        <h2>
+                            Charging Stations
+                        </h2>
+
                     </div>
+
 
                     <button id="viewAllStations">
                         View All →
@@ -156,7 +278,10 @@
                 </div>
 
 
-                <div id="stationList" class="dashboard-stations">
+                <div
+                    id="stationList"
+                    class="dashboard-stations"
+                >
 
                     <div class="loading">
                         Loading charging stations...
@@ -167,15 +292,22 @@
             </div>
 
 
-            <!-- Profile / Battery -->
+            <!-- Vehicle Status -->
 
             <div class="dashboard-panel battery-panel">
 
                 <div class="panel-header">
 
                     <div>
-                        <span>YOUR VEHICLE</span>
-                        <h2>Vehicle Status</h2>
+
+                        <span>
+                            YOUR VEHICLE
+                        </span>
+
+                        <h2>
+                            Vehicle Status
+                        </h2>
+
                     </div>
 
                 </div>
@@ -187,7 +319,9 @@
                         🚗
                     </div>
 
+
                     <div>
+
                         <h3 id="vehicleModel">
                             Loading...
                         </h3>
@@ -195,20 +329,28 @@
                         <p id="vehicleNumber">
                             ---
                         </p>
+
                     </div>
 
                 </div>
 
 
+                <!-- Battery -->
+
                 <div class="battery-large">
 
                     <div class="battery-large-top">
-                        <span>Battery Level</span>
+
+                        <span>
+                            Battery Level
+                        </span>
 
                         <strong id="batteryLarge">
                             --%
                         </strong>
+
                     </div>
+
 
                     <div class="battery-track">
 
@@ -222,12 +364,15 @@
                 </div>
 
 
+                <!-- Recommendation -->
+
                 <button
                     class="recommend-btn"
                     id="recommendBtn"
                 >
                     ⚡ Find Best Charging Station
                 </button>
+
 
                 <div
                     id="recommendation"
@@ -246,9 +391,17 @@
             <div class="panel-header">
 
                 <div>
-                    <span>UPDATES</span>
-                    <h2>Recent Notifications</h2>
+
+                    <span>
+                        UPDATES
+                    </span>
+
+                    <h2>
+                        Recent Notifications
+                    </h2>
+
                 </div>
+
 
                 <button id="viewNotifications">
                     View All →
@@ -269,6 +422,8 @@
 
     </main>
 
+
+    <!-- Dashboard JavaScript -->
 
     <script src="js/dashboard.js"></script>
 

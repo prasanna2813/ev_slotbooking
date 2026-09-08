@@ -5,215 +5,269 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EVCharge | My Bookings</title>
+    <title>EVCharge | Book Charging Slot</title>
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="dashboard-page">
 
-    <!-- Sidebar -->
+    <!-- SIDEBAR -->
+
     <aside class="sidebar">
 
-        <div class="sidebar-logo">
+        <div class="dashboard-logo">
             ⚡ EVCharge
         </div>
 
         <nav class="sidebar-nav">
 
-            <a href="dashboard.html">
+            <a href="./dashboard.html">
                 🏠 Dashboard
             </a>
 
-            <a href="stations.html">
-                ⚡ Charging Stations
+            <a href="./stations.html">
+                📍 Charging Stations
             </a>
 
-            <a href="bookings.html" class="active">
+            <a href="./bookings.html">
                 📅 My Bookings
             </a>
 
-            <a href="notifications.html">
+            <a href="./notifications.html">
                 🔔 Notifications
             </a>
 
         </nav>
 
         <button id="logoutBtn" class="logout-btn">
-            🚪 Logout
+            ↪ Logout
         </button>
 
     </aside>
 
 
-    <!-- Main Content -->
+    <!-- MAIN -->
+
     <main class="dashboard-main">
 
-        <!-- Topbar -->
         <div class="dashboard-topbar">
 
             <div>
 
-                <span class="dashboard-label">
+                <p class="welcome-small">
                     EVCHARGE
-                </span>
-
-                <h1>
-                    My Bookings
-                </h1>
-
-                <p>
-                    View and manage your EV charging reservations.
                 </p>
 
+                <h1>
+                    Book Charging Slot
+                </h1>
+
+            </div>
+
+            <div class="profile-circle">
+                ⚡
             </div>
 
         </div>
 
 
-        <!-- Booking Summary -->
-        <section class="dashboard-stats">
+        <!-- STATION DETAILS -->
 
-            <div class="dashboard-stat-card">
-
-                <span class="stat-icon">
-                    📅
-                </span>
-
-                <div>
-
-                    <span class="stat-label">
-                        Total Bookings
-                    </span>
-
-                    <strong id="totalBookings">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="dashboard-stat-card">
-
-                <span class="stat-icon">
-                    ⚡
-                </span>
-
-                <div>
-
-                    <span class="stat-label">
-                        Active Bookings
-                    </span>
-
-                    <strong id="activeBookings">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-
-            <div class="dashboard-stat-card">
-
-                <span class="stat-icon">
-                    ✓
-                </span>
-
-                <div>
-
-                    <span class="stat-label">
-                        Completed
-                    </span>
-
-                    <strong id="completedBookings">
-                        0
-                    </strong>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- Bookings -->
         <section class="dashboard-panel">
 
             <div class="panel-header">
 
                 <div>
 
-                    <h2>
-                        Your Charging Bookings
-                    </h2>
+                    <span>SELECTED STATION</span>
 
-                    <p class="panel-subtitle">
-                        Manage your upcoming and previous charging sessions.
-                    </p>
+                    <h2 id="stationName">
+                        Loading station...
+                    </h2>
 
                 </div>
 
-                <a
-                    href="stations.html"
-                    class="station-book-btn"
-                >
-                    + Book New Slot
-                </a>
+            </div>
+
+
+            <div id="stationDetails">
+
+                <div class="loading">
+                    Loading station details...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- BOOKING SECTION -->
+
+        <section
+            class="dashboard-panel"
+            id="bookingSection"
+        >
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span>RESERVATION</span>
+
+                    <h2>
+                        Choose Your Charging Slot
+                    </h2>
+
+                </div>
 
             </div>
 
 
-            <!-- Loading -->
-            <div id="bookingLoading">
+            <form id="bookingForm">
+
+                <div class="form-group">
+
+                    <label for="slotTime">
+                        Charging Date & Time
+                    </label>
+
+                    <input
+                        type="datetime-local"
+                        id="slotTime"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="duration">
+                        Charging Duration
+                    </label>
+
+                    <select
+                        id="duration"
+                        required
+                    >
+
+                        <option value="">
+                            Select duration
+                        </option>
+
+                        <option value="30">
+                            30 Minutes
+                        </option>
+
+                        <option value="60">
+                            1 Hour
+                        </option>
+
+                        <option value="90">
+                            1 Hour 30 Minutes
+                        </option>
+
+                        <option value="120">
+                            2 Hours
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="vehicleNumber">
+                        Vehicle Number
+                    </label>
+
+                    <input
+                        type="text"
+                        id="vehicleNumber"
+                        placeholder="Enter vehicle number"
+                        required
+                    >
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="bookBtn"
+                    class="recommend-btn"
+                >
+                    ⚡ Confirm Booking
+                </button>
+
+            </form>
+
+
+            <div
+                id="bookingMessage"
+                class="recommendation"
+            ></div>
+
+        </section>
+
+
+        <!-- QUEUE SECTION -->
+
+        <section
+            class="dashboard-panel"
+            id="queueSection"
+            style="display: none;"
+        >
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span>STATION FULL</span>
+
+                    <h2>
+                        Join Charging Queue
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div id="queueInfo">
 
                 <p>
-                    Loading your bookings...
+                    This charging station is currently full.
+                </p>
+
+                <p>
+                    You can join the waiting queue and
+                    receive a notification when a slot becomes available.
                 </p>
 
             </div>
 
 
-            <!-- Booking List -->
-            <div
-                id="bookingList"
-                class="booking-list"
+            <button
+                id="joinQueueBtn"
+                class="recommend-btn"
             >
-            </div>
+                ⏳ Join Charging Queue
+            </button>
 
 
-            <!-- Empty State -->
             <div
-                id="emptyBookings"
-                class="empty-state"
-                style="display:none;"
-            >
-
-                <h3>
-                    No bookings yet
-                </h3>
-
-                <p>
-                    You haven't booked any charging slots.
-                </p>
-
-                <a
-                    href="stations.html"
-                    class="station-book-btn"
-                >
-                    Find Charging Station →
-                </a>
-
-            </div>
+                id="queueMessage"
+                class="recommendation"
+            ></div>
 
         </section>
 
     </main>
 
 
-    <script src="js/bookings.js"></script>
+    <script src="./js/booking.js"></script>
 
 </body>
 

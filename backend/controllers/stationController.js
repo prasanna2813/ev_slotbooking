@@ -1,5 +1,6 @@
 const Station = require("../models/Station");
 const Queue = require("../models/Queue");
+const User = require("../models/User");
 
 // Create Charging Station
 const createStation = async (req, res) => {
@@ -141,7 +142,8 @@ const getNearbyStations = async (req, res) => {
             isNaN(searchRadius)
         ) {
             return res.status(400).json({
-                message: "Latitude, longitude and radius must be valid numbers"
+                message:
+                    "Latitude, longitude and radius must be valid numbers"
             });
         }
 
@@ -149,6 +151,7 @@ const getNearbyStations = async (req, res) => {
 
         const nearbyStations = stations
             .map((station) => {
+
                 const distance = calculateDistance(
                     userLatitude,
                     userLongitude,
@@ -158,22 +161,36 @@ const getNearbyStations = async (req, res) => {
 
                 return {
                     ...station.toObject(),
-                    distance: Number(distance.toFixed(2))
+                    distance: Number(
+                        distance.toFixed(2)
+                    )
                 };
+
             })
-            .filter((station) => station.distance <= searchRadius)
-            .sort((a, b) => a.distance - b.distance);
+            .filter(
+                (station) =>
+                    station.distance <= searchRadius
+            )
+            .sort(
+                (a, b) =>
+                    a.distance - b.distance
+            );
 
         res.status(200).json({
-            message: "Nearby charging stations fetched successfully",
-            searchRadius: `${searchRadius} km`,
-            count: nearbyStations.length,
-            stations: nearbyStations
+            message:
+                "Nearby charging stations fetched successfully",
+            searchRadius:
+                `${searchRadius} km`,
+            count:
+                nearbyStations.length,
+            stations:
+                nearbyStations
         });
 
     } catch (error) {
         res.status(500).json({
-            message: "Failed to find nearby charging stations",
+            message:
+                "Failed to find nearby charging stations",
             error: error.message
         });
     }
@@ -183,109 +200,328 @@ const getNearbyStations = async (req, res) => {
 // Smart Station Recommendation
 const recommendStation = async (req, res) => {
     try {
+
         const {
             latitude,
             longitude,
             chargingType
         } = req.query;
 
+
         if (!latitude || !longitude) {
             return res.status(400).json({
-                message: "Latitude and longitude are required"
+                message:
+                    "Latitude and longitude are required"
             });
         }
 
-        const userLatitude = parseFloat(latitude);
-        const userLongitude = parseFloat(longitude);
 
-        if (isNaN(userLatitude) || isNaN(userLongitude)) {
+        const userLatitude =
+            parseFloat(latitude);
+
+        const userLongitude =
+            parseFloat(longitude);
+
+
+        if (
+            isNaN(userLatitude) ||
+            isNaN(userLongitude)
+        ) {
             return res.status(400).json({
-                message: "Latitude and longitude must be valid numbers"
+                message:
+                    "Latitude and longitude must be valid numbers"
             });
         }
 
-        // Get all stations
-        let stations = await Station.find();
 
-        // Filter by charging type if provided
-        if (chargingType) {
-            stations = stations.filter(
-                (station) =>
-                    station.chargingType.toLowerCase() ===
-                    chargingType.toLowerCase()
+        // ========================================
+        // GET LOGGED-IN USER
+        // ========================================
+
+        const user =
+            await User.findById(
+                req.user.userId
             );
+
+
+        if (!user) {
+            return res.status(404).json({
+                message:
+                    "User not found"
+            });
         }
+
+
+        // ========================================
+        // USER BATTERY
+        // ========================================
+
+        const batteryPercentage =
+            Number(
+                user.batteryPercentage
+            );
+
+
+        // ========================================
+        // GET ALL STATIONS
+        // ========================================
+
+        let stations =
+            await Station.find();
+
+
+        // ========================================
+        // FILTER BY CHARGING TYPE
+        // ========================================
+
+        if (chargingType) {
+
+            stations =
+                stations.filter(
+                    (station) =>
+                        station.chargingType
+                            .toLowerCase() ===
+                        chargingType
+                            .toLowerCase()
+                );
+
+        }
+
 
         if (stations.length === 0) {
+
             return res.status(404).json({
-                message: "No charging stations found"
+                message:
+                    "No charging stations found"
             });
+
         }
+
 
         const recommendations = [];
 
+
+        // ========================================
+        // CALCULATE SCORE
+        // ========================================
+
         for (const station of stations) {
 
-            // Calculate distance
-            const distance = calculateDistance(
-                userLatitude,
-                userLongitude,
-                station.latitude,
-                station.longitude
-            );
 
-            // Get waiting users
-            const waitingUsers = await Queue.countDocuments({
-                stationId: station._id,
-                status: "Waiting"
-            });
+            // Distance
+            const distance =
+                calculateDistance(
+                    userLatitude,
+                    userLongitude,
+                    station.latitude,
+                    station.longitude
+                );
 
-            // Calculate estimated waiting time
-            const waitingTime = waitingUsers * 30;
 
-            // Calculate recommendation score
+            // Waiting users
+            const waitingUsers =
+                await Queue.countDocuments({
+                    stationId:
+                        station._id,
+                    status:
+                        "Waiting"
+                });
+
+
+            // Estimated waiting time
+            const waitingTime =
+                waitingUsers * 30;
+
+
+            // ========================================
+            // BASE SCORE
+            // ========================================
+
             let score = 100;
 
-            // Distance penalty
-            score -= distance * 5;
 
-            // Availability bonus
-            score += station.availableSlots * 10;
+            // ========================================
+            // DISTANCE PENALTY
+            // ========================================
 
-            // Waiting time penalty
-            score -= waitingTime * 0.5;
+            score -=
+                distance * 5;
 
-            // Price penalty
-            score -= station.pricePerUnit * 1;
+
+            // ========================================
+            // AVAILABILITY BONUS
+            // ========================================
+
+            score +=
+                station.availableSlots * 10;
+
+
+            // ========================================
+            // WAITING TIME PENALTY
+            // ========================================
+
+            score -=
+                waitingTime * 0.5;
+
+
+            // ========================================
+            // PRICE PENALTY
+            // ========================================
+
+            score -=
+                station.pricePerUnit * 1;
+
+
+            // ========================================
+            // BATTERY-AWARE BONUS
+            // ========================================
+
+            let batteryBonus = 0;
+
+
+            /*
+                Low battery = higher urgency.
+
+                Battery <= 20%
+                → Strong preference for stations
+                  with available slots.
+
+                Battery 21% - 50%
+                → Moderate preference.
+
+                Battery > 50%
+                → Normal preference.
+            */
+
+
+            if (batteryPercentage <= 20) {
+
+                if (
+                    station.availableSlots > 0
+                ) {
+
+                    batteryBonus = 30;
+
+                } else {
+
+                    batteryBonus = -30;
+
+                }
+
+            } else if (
+                batteryPercentage <= 50
+            ) {
+
+                if (
+                    station.availableSlots > 0
+                ) {
+
+                    batteryBonus = 15;
+
+                }
+
+            } else {
+
+                if (
+                    station.availableSlots > 0
+                ) {
+
+                    batteryBonus = 5;
+
+                }
+
+            }
+
+
+            score += batteryBonus;
+
+
+            // ========================================
+            // PUSH RECOMMENDATION
+            // ========================================
 
             recommendations.push({
-                station: station,
-                distance: Number(distance.toFixed(2)),
-                availableSlots: station.availableSlots,
-                waitingUsers: waitingUsers,
-                estimatedWaitTime: waitingTime,
-                score: Number(score.toFixed(2))
+
+                station:
+                    station,
+
+                distance:
+                    Number(
+                        distance.toFixed(2)
+                    ),
+
+                availableSlots:
+                    station.availableSlots,
+
+                waitingUsers:
+                    waitingUsers,
+
+                estimatedWaitTime:
+                    waitingTime,
+
+                batteryPercentage:
+                    batteryPercentage,
+
+                batteryBonus:
+                    batteryBonus,
+
+                score:
+                    Number(
+                        score.toFixed(2)
+                    )
+
             });
+
         }
 
-        // Highest score = best station
+
+        // ========================================
+        // SORT BY SCORE
+        // ========================================
+
         recommendations.sort(
-            (a, b) => b.score - a.score
+            (a, b) =>
+                b.score - a.score
         );
 
-        const bestStation = recommendations[0];
+
+        const bestStation =
+            recommendations[0];
+
+
+        // ========================================
+        // RESPONSE
+        // ========================================
 
         res.status(200).json({
-            message: "Smart charging station recommendation generated",
-            recommendedStation: bestStation,
-            alternatives: recommendations.slice(1)
+
+            message:
+                "Smart battery-aware charging station recommendation generated",
+
+            batteryPercentage:
+                batteryPercentage,
+
+            recommendedStation:
+                bestStation,
+
+            alternatives:
+                recommendations.slice(1)
+
         });
 
+
     } catch (error) {
+
         res.status(500).json({
-            message: "Failed to generate recommendation",
-            error: error.message
+
+            message:
+                "Failed to generate recommendation",
+
+            error:
+                error.message
+
         });
+
     }
 };
 
@@ -297,40 +533,131 @@ const calculateDistance = (
     lat2,
     lon2
 ) => {
-    const earthRadius = 6371;
 
-    const latDifference = toRadians(lat2 - lat1);
-    const lonDifference = toRadians(lon2 - lon1);
+    const earthRadius =
+        6371;
+
+
+    const latDifference =
+        toRadians(
+            lat2 - lat1
+        );
+
+
+    const lonDifference =
+        toRadians(
+            lon2 - lon1
+        );
+
 
     const a =
-        Math.sin(latDifference / 2) *
-        Math.sin(latDifference / 2) +
-        Math.cos(toRadians(lat1)) *
-        Math.cos(toRadians(lat2)) *
-        Math.sin(lonDifference / 2) *
-        Math.sin(lonDifference / 2);
+        Math.sin(
+            latDifference / 2
+        ) *
+        Math.sin(
+            latDifference / 2
+        ) +
+
+        Math.cos(
+            toRadians(lat1)
+        ) *
+        Math.cos(
+            toRadians(lat2)
+        ) *
+
+        Math.sin(
+            lonDifference / 2
+        ) *
+        Math.sin(
+            lonDifference / 2
+        );
+
 
     const c =
-        2 * Math.atan2(
+        2 *
+        Math.atan2(
             Math.sqrt(a),
             Math.sqrt(1 - a)
         );
+
 
     return earthRadius * c;
 };
 
 
 // Convert Degrees to Radians
-const toRadians = (degrees) => {
-    return degrees * (Math.PI / 180);
+const toRadians = (
+    degrees
+) => {
+
+    return (
+        degrees *
+        (Math.PI / 180)
+    );
+
 };
 
 
+
+const adminGetStations = async (req, res) => {
+    try {
+
+        const stations = await Station.find()
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({
+            message: "Stations fetched successfully",
+            stations
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: "Failed to fetch stations",
+            error: error.message
+        });
+
+    }
+};
+
+
+const deleteStation = async (req, res) => {
+    try {
+
+        const { id } = req.params;
+
+        const station = await Station.findById(id);
+
+        if (!station) {
+
+            return res.status(404).json({
+                message: "Station not found"
+            });
+
+        }
+
+        await Station.findByIdAndDelete(id);
+
+        res.status(200).json({
+            message: "Station deleted successfully"
+        });
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: "Failed to delete station",
+            error: error.message
+        });
+
+    }
+};
 module.exports = {
     createStation,
     getStations,
     getStationById,
     updateStation,
     getNearbyStations,
-    recommendStation
+    recommendStation,
+    adminGetStations,
+    deleteStation
 };

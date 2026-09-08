@@ -20,14 +20,17 @@ if (!token) {
 // ELEMENTS
 // ========================================
 
-const stationList =
-    document.getElementById("stationList");
+const stationsContainer =
+    document.getElementById("stationsContainer");
 
-const nearbyStations =
-    document.getElementById("nearbyStations");
+const nearbyContainer =
+    document.getElementById("nearbyContainer");
 
-const findNearbyBtn =
-    document.getElementById("findNearbyBtn");
+const nearbyBtn =
+    document.getElementById("nearbyBtn");
+
+const stationCount =
+    document.getElementById("stationCount");
 
 const logoutBtn =
     document.getElementById("logoutBtn");
@@ -39,8 +42,14 @@ const logoutBtn =
 
 async function loadStations() {
 
-    stationList.innerHTML = `
-        <p>Loading charging stations...</p>
+    if (!stationsContainer) {
+        return;
+    }
+
+    stationsContainer.innerHTML = `
+        <div class="station-loading">
+            Loading charging stations...
+        </div>
     `;
 
     try {
@@ -48,6 +57,7 @@ async function loadStations() {
         const response = await fetch(
             `${API_URL}/api/stations`,
             {
+                method: "GET",
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -56,29 +66,13 @@ async function loadStations() {
 
         const data = await response.json();
 
-
         if (!response.ok) {
 
-            stationList.innerHTML = `
-                <p>
-                    ${data.message || "Failed to load stations."}
-                </p>
-            `;
-
-            return;
-        }
-
-
-        const stations = data.stations;
-
-
-        if (!stations || stations.length === 0) {
-
-            stationList.innerHTML = `
+            stationsContainer.innerHTML = `
                 <div class="empty-state">
-                    <h3>No charging stations found</h3>
+                    <h3>Unable to load stations</h3>
                     <p>
-                        There are currently no charging stations available.
+                        ${data.message || "Failed to load stations."}
                     </p>
                 </div>
             `;
@@ -86,38 +80,81 @@ async function loadStations() {
             return;
         }
 
+        const stations = data.stations || [];
 
-        stationList.innerHTML = "";
 
+        // ========================================
+        // STATION COUNT
+        // ========================================
+
+        if (stationCount) {
+            stationCount.textContent =
+                `${stations.length} Stations`;
+        }
+
+
+        // ========================================
+        // NO STATIONS
+        // ========================================
+
+        if (stations.length === 0) {
+
+            stationsContainer.innerHTML = `
+                <div class="empty-state">
+
+                    <h3>
+                        No charging stations found
+                    </h3>
+
+                    <p>
+                        There are currently no charging
+                        stations available.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        // ========================================
+        // DISPLAY ALL STATIONS
+        // ========================================
+
+        stationsContainer.innerHTML = "";
 
         stations.forEach(function (station) {
 
             const card =
                 createStationCard(station);
 
-            stationList.appendChild(card);
+            stationsContainer.appendChild(card);
 
         });
 
-
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Load stations error:",
+            error
+        );
 
-        stationList.innerHTML = `
+        stationsContainer.innerHTML = `
             <div class="empty-state">
 
-                <h3>Unable to connect</h3>
+                <h3>
+                    Unable to connect
+                </h3>
 
                 <p>
-                    Please make sure the backend server is running.
+                    Please make sure the backend
+                    server is running.
                 </p>
 
             </div>
         `;
-
     }
-
 }
 
 
@@ -125,7 +162,10 @@ async function loadStations() {
 // CREATE STATION CARD
 // ========================================
 
-function createStationCard(station, distance = null) {
+function createStationCard(
+    station,
+    distance = null
+) {
 
     const card =
         document.createElement("div");
@@ -139,9 +179,7 @@ function createStationCard(station, distance = null) {
     // ========================================
 
     let statusText = "";
-
     let statusClass = "";
-
 
     if (station.availableSlots > 0) {
 
@@ -158,7 +196,6 @@ function createStationCard(station, distance = null) {
 
         statusClass =
             "full";
-
     }
 
 
@@ -168,7 +205,6 @@ function createStationCard(station, distance = null) {
 
     let distanceHTML = "";
 
-
     if (distance !== null) {
 
         distanceHTML = `
@@ -176,16 +212,14 @@ function createStationCard(station, distance = null) {
                 📍 ${distance} km away
             </span>
         `;
-
     }
 
 
     // ========================================
-    // BUTTON TEXT
+    // BUTTON
     // ========================================
 
     let buttonText = "";
-
 
     if (station.availableSlots > 0) {
 
@@ -196,8 +230,20 @@ function createStationCard(station, distance = null) {
 
         buttonText =
             "Join Queue →";
-
     }
+
+
+    // ========================================
+    // SLOT PERCENTAGE
+    // ========================================
+
+    const availabilityPercentage =
+        station.totalSlots > 0
+            ? (
+                station.availableSlots /
+                station.totalSlots
+            ) * 100
+            : 0;
 
 
     // ========================================
@@ -289,14 +335,7 @@ function createStationCard(station, distance = null) {
 
                 <div
                     class="slot-progress"
-                    style="width: ${
-                        station.totalSlots > 0
-                            ? (
-                                station.availableSlots /
-                                station.totalSlots
-                            ) * 100
-                            : 0
-                    }%"
+                    style="width: ${availabilityPercentage}%"
                 ></div>
 
             </div>
@@ -324,27 +363,27 @@ function createStationCard(station, distance = null) {
         );
 
 
-    button.addEventListener(
-        "click",
-        function () {
+    if (button) {
 
-            // Save selected station
-            localStorage.setItem(
-                "selectedStationId",
-                station._id
-            );
+        button.addEventListener(
+            "click",
+            function () {
 
+                localStorage.setItem(
+                    "selectedStationId",
+                    station._id
+                );
 
-            // Open booking page
-            window.location.href =
-                `booking.html?stationId=${station._id}`;
+                window.location.href =
+                    `booking.html?stationId=${station._id}`;
 
-        }
-    );
+            }
+        );
+
+    }
 
 
     return card;
-
 }
 
 
@@ -352,25 +391,36 @@ function createStationCard(station, distance = null) {
 // FIND NEARBY STATIONS
 // ========================================
 
-if (findNearbyBtn) {
+if (nearbyBtn) {
 
-    findNearbyBtn.addEventListener(
+    nearbyBtn.addEventListener(
         "click",
         async function () {
 
-            nearbyStations.innerHTML = `
-                <p>
+            if (!nearbyContainer) {
+                return;
+            }
+
+
+            // Button loading state
+
+            nearbyBtn.disabled = true;
+
+            nearbyBtn.textContent =
+                "Finding Nearby Stations...";
+
+
+            nearbyContainer.innerHTML = `
+                <div class="station-loading">
                     Finding nearby charging stations...
-                </p>
+                </div>
             `;
 
 
-            /*
-             * Currently using Tirupati coordinates.
-             *
-             * Later we can replace this with
-             * browser GPS location.
-             */
+            // ========================================
+            // CURRENT LOCATION
+            // Tirupati coordinates
+            // ========================================
 
             const latitude =
                 13.6288;
@@ -384,15 +434,17 @@ if (findNearbyBtn) {
 
             try {
 
-                const response = await fetch(
-                    `${API_URL}/api/stations/nearby?latitude=${latitude}&longitude=${longitude}&radius=${radius}`,
-                    {
-                        headers: {
-                            Authorization:
-                                `Bearer ${token}`
+                const response =
+                    await fetch(
+                        `${API_URL}/api/stations/nearby?latitude=${latitude}&longitude=${longitude}&radius=${radius}`,
+                        {
+                            method: "GET",
+                            headers: {
+                                Authorization:
+                                    `Bearer ${token}`
+                            }
                         }
-                    }
-                );
+                    );
 
 
                 const data =
@@ -401,13 +453,21 @@ if (findNearbyBtn) {
 
                 if (!response.ok) {
 
-                    nearbyStations.innerHTML = `
-                        <p>
-                            ${
-                                data.message ||
-                                "Unable to find nearby stations."
-                            }
-                        </p>
+                    nearbyContainer.innerHTML = `
+                        <div class="empty-state">
+
+                            <h3>
+                                Unable to find nearby stations
+                            </h3>
+
+                            <p>
+                                ${
+                                    data.message ||
+                                    "Unable to find nearby stations."
+                                }
+                            </p>
+
+                        </div>
                     `;
 
                     return;
@@ -415,15 +475,16 @@ if (findNearbyBtn) {
 
 
                 const stations =
-                    data.stations;
+                    data.stations || [];
 
 
-                if (
-                    !stations ||
-                    stations.length === 0
-                ) {
+                // ========================================
+                // NO NEARBY STATIONS
+                // ========================================
 
-                    nearbyStations.innerHTML = `
+                if (stations.length === 0) {
+
+                    nearbyContainer.innerHTML = `
                         <div class="empty-state">
 
                             <h3>
@@ -442,7 +503,11 @@ if (findNearbyBtn) {
                 }
 
 
-                nearbyStations.innerHTML = "";
+                // ========================================
+                // DISPLAY NEARBY STATIONS
+                // ========================================
+
+                nearbyContainer.innerHTML = "";
 
 
                 stations.forEach(
@@ -454,7 +519,7 @@ if (findNearbyBtn) {
                                 station.distance
                             );
 
-                        nearbyStations.appendChild(
+                        nearbyContainer.appendChild(
                             card
                         );
 
@@ -462,11 +527,22 @@ if (findNearbyBtn) {
                 );
 
 
+                // Scroll to nearby results
+
+                nearbyContainer.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+
             } catch (error) {
 
-                console.log(error);
+                console.log(
+                    "Nearby stations error:",
+                    error
+                );
 
-                nearbyStations.innerHTML = `
+                nearbyContainer.innerHTML = `
                     <div class="empty-state">
 
                         <h3>
@@ -481,11 +557,17 @@ if (findNearbyBtn) {
                     </div>
                 `;
 
+            } finally {
+
+                nearbyBtn.disabled = false;
+
+                nearbyBtn.textContent =
+                    "📍 Find Nearby Stations";
+
             }
 
         }
     );
-
 }
 
 
@@ -499,21 +581,23 @@ if (logoutBtn) {
         "click",
         function () {
 
-            localStorage.removeItem("token");
+            localStorage.removeItem(
+                "token"
+            );
 
-            localStorage.removeItem("userId");
+            localStorage.removeItem(
+                "userId"
+            );
 
             localStorage.removeItem(
                 "selectedStationId"
             );
-
 
             window.location.href =
                 "login.html";
 
         }
     );
-
 }
 
 

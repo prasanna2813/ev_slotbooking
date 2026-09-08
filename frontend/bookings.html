@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>EVCharge | My Bookings</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="dashboard-logo">
+            ⚡ EVCharge
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="./dashboard.html">
+                🏠 Dashboard
+            </a>
+
+            <a href="./stations.html">
+                📍 Charging Stations
+            </a>
+
+            <a
+                href="./bookings.html"
+                class="active"
+            >
+                📅 My Bookings
+            </a>
+
+            <a href="./notifications.html">
+                🔔 Notifications
+            </a>
+
+        </nav>
+
+
+        <button
+            id="logoutBtn"
+            class="logout-btn"
+        >
+            ↪ Logout
+        </button>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    EVCHARGE
+                </p>
+
+                <h1>
+                    My Bookings
+                </h1>
+
+            </div>
+
+
+            <div class="profile-circle">
+                📅
+            </div>
+
+        </div>
+
+
+        <!-- STATS -->
+
+        <section class="dashboard-stats">
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <span>
+                        Total Bookings
+                    </span>
+
+                    <strong id="totalBookings">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    ⚡
+                </div>
+
+                <div>
+
+                    <span>
+                        Active
+                    </span>
+
+                    <strong id="activeBookings">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="dashboard-stat">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <span>
+                        Completed
+                    </span>
+
+                    <strong id="completedBookings">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- BOOKINGS -->
+
+        <section class="dashboard-panel">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <span>
+                        HISTORY
+                    </span>
+
+                    <h2>
+                        Your Charging Bookings
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <div id="bookingList">
+
+                <div class="loading">
+                    Loading your bookings...
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script src="./js/bookings.js"></script>
+
+</body>
+
+</html>

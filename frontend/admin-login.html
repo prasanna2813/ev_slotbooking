@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Admin Login</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-login-page">
+
+    <div class="admin-login-wrapper">
+
+        <!-- LEFT SIDE -->
+
+        <div class="admin-login-left">
+
+            <div class="admin-brand">
+                ⚡ <span>EVCharge</span>
+            </div>
+
+            <div class="admin-intro">
+
+                <p class="admin-label">
+                    ADMIN PORTAL
+                </p>
+
+                <h1>
+                    Manage the future<br>
+                    of <span>EV Charging.</span>
+                </h1>
+
+                <p class="admin-description">
+                    Monitor charging stations, manage bookings,
+                    track users and keep the charging network
+                    running smoothly.
+                </p>
+
+                <div class="admin-features">
+
+                    <div class="admin-feature">
+                        <div>📊</div>
+                        <span>Real-time dashboard monitoring</span>
+                    </div>
+
+                    <div class="admin-feature">
+                        <div>📍</div>
+                        <span>Manage charging stations</span>
+                    </div>
+
+                    <div class="admin-feature">
+                        <div>📅</div>
+                        <span>Track user bookings</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+
+        <div class="admin-login-right">
+
+            <div class="admin-login-card">
+
+                <div class="admin-login-icon">
+                    🔐
+                </div>
+
+                <p class="admin-small-label">
+                    SECURE ACCESS
+                </p>
+
+                <h2>
+                    Admin Login
+                </h2>
+
+                <p class="admin-login-subtitle">
+                    Sign in to access the EVCharge management panel.
+                </p>
+
+
+                <!-- LOGIN FORM -->
+
+                <form id="adminLoginForm">
+
+
+                    <div class="admin-form-group">
+
+                        <label for="adminEmail">
+                            Email Address
+                        </label>
+
+                        <div class="admin-input-wrapper">
+
+                            <span>✉️</span>
+
+                            <input
+                                type="email"
+                                id="adminEmail"
+                                placeholder="Enter admin email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <div class="admin-form-group">
+
+                        <label for="adminPassword">
+                            Password
+                        </label>
+
+                        <div class="admin-input-wrapper">
+
+                            <span>🔒</span>
+
+                            <input
+                                type="password"
+                                id="adminPassword"
+                                placeholder="Enter admin password"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+
+                    <button
+                        type="submit"
+                        class="admin-login-btn"
+                    >
+
+                        Login as Admin
+                        <span>→</span>
+
+                    </button>
+
+
+                </form>
+
+
+                <p
+                    id="adminLoginMessage"
+                    class="admin-login-message"
+                ></p>
+
+
+                <div class="admin-security-note">
+
+                    🛡️
+                    <span>
+                        Authorized administrators only
+                    </span>
+
+                </div>
+
+
+                <div class="admin-back-link">
+
+                    <a href="index.html">
+                        ← Back to EVCharge
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script src="js/admin-login.js"></script>
+
+</body>
+
+</html>

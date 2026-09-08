@@ -2,11 +2,9 @@
 // EVCHARGE - DASHBOARD
 // ========================================
 
-const API_URL =
-    "http://localhost:5000";
+const API_URL = "http://localhost:5000";
 
-const token =
-    localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
 
 // ========================================
@@ -14,10 +12,7 @@ const token =
 // ========================================
 
 if (!token) {
-
-    window.location.href =
-        "login.html";
-
+    window.location.href = "./login.html";
 }
 
 
@@ -25,20 +20,41 @@ if (!token) {
 // ELEMENTS
 // ========================================
 
-const userName =
-    document.getElementById("userName");
+const welcomeName =
+    document.getElementById("welcomeName");
 
-const userInitial =
-    document.getElementById("userInitial");
+const profileInitial =
+    document.getElementById("profileInitial");
+
+const profileDropdown =
+    document.getElementById("profileDropdown");
+
+const profileDropdownInitial =
+    document.getElementById("profileDropdownInitial");
+
+const profileDropdownName =
+    document.getElementById("profileDropdownName");
+
+const profileDropdownEmail =
+    document.getElementById("profileDropdownEmail");
+
+const profileDropdownVehicle =
+    document.getElementById("profileDropdownVehicle");
+
+const profileDropdownBattery =
+    document.getElementById("profileDropdownBattery");
+
+const profileLogoutBtn =
+    document.getElementById("profileLogoutBtn");
 
 const batteryValue =
     document.getElementById("batteryValue");
 
+const batteryLarge =
+    document.getElementById("batteryLarge");
+
 const batteryProgress =
     document.getElementById("batteryProgress");
-
-const chargingType =
-    document.getElementById("chargingType");
 
 const vehicleNumber =
     document.getElementById("vehicleNumber");
@@ -50,24 +66,75 @@ const bookingCount =
     document.getElementById("bookingCount");
 
 const notificationCount =
-    document.getElementById(
-        "notificationCount"
-    );
+    document.getElementById("notificationCount");
 
 const stationList =
     document.getElementById("stationList");
 
 const notificationList =
-    document.getElementById(
-        "notificationList"
-    );
+    document.getElementById("notificationList");
+
+const viewAllStations =
+    document.getElementById("viewAllStations");
+
+const viewNotifications =
+    document.getElementById("viewNotifications");
+
+const recommendBtn =
+    document.getElementById("recommendBtn");
+
+const recommendation =
+    document.getElementById("recommendation");
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
 
 // ========================================
-// LOAD PROFILE
+// PROFILE DROPDOWN
+// ========================================
+
+if (profileInitial && profileDropdown) {
+
+    profileInitial.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            profileDropdown.classList.toggle(
+                "show"
+            );
+
+        }
+    );
+
+
+    // Close dropdown when clicking outside
+
+    document.addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                !profileDropdown.contains(event.target) &&
+                !profileInitial.contains(event.target)
+            ) {
+
+                profileDropdown.classList.remove(
+                    "show"
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+// ========================================
+// LOAD USER PROFILE
 // ========================================
 
 async function loadProfile() {
@@ -78,6 +145,8 @@ async function loadProfile() {
             await fetch(
                 `${API_URL}/api/auth/profile`,
                 {
+                    method: "GET",
+
                     headers: {
                         Authorization:
                             `Bearer ${token}`
@@ -92,8 +161,12 @@ async function loadProfile() {
 
         if (!response.ok) {
 
-            return;
+            console.log(
+                "Profile error:",
+                data.message
+            );
 
+            return;
         }
 
 
@@ -101,52 +174,79 @@ async function loadProfile() {
             data.user;
 
 
-        // Name
+        // ========================================
+        // USER NAME
+        // ========================================
 
-        if (userName) {
+        if (welcomeName) {
 
-            userName.textContent =
-                user.name;
+            welcomeName.textContent =
+                `Welcome back, ${user.name} 👋`;
 
         }
 
 
-        // Initial
+        // ========================================
+        // PROFILE INITIAL
+        // ========================================
 
-        if (userInitial) {
-
-            userInitial.textContent =
-                user.name
+        const initial =
+            user.name
+                ? user.name
                     .charAt(0)
-                    .toUpperCase();
+                    .toUpperCase()
+                : "U";
+
+
+        if (profileInitial) {
+
+            profileInitial.textContent =
+                initial;
 
         }
 
 
-        // Battery
+        if (profileDropdownInitial) {
 
-        if (batteryValue) {
-
-            batteryValue.textContent =
-                `${user.batteryPercentage}%`;
+            profileDropdownInitial.textContent =
+                initial;
 
         }
 
 
-        if (batteryProgress) {
+        // ========================================
+        // PROFILE DROPDOWN NAME
+        // ========================================
 
-            batteryProgress.style.width =
-                `${user.batteryPercentage}%`;
+        if (profileDropdownName) {
+
+            profileDropdownName.textContent =
+                user.name || "User";
 
         }
 
 
-        // Vehicle
+        // ========================================
+        // PROFILE DROPDOWN EMAIL
+        // ========================================
+
+        if (profileDropdownEmail) {
+
+            profileDropdownEmail.textContent =
+                user.email || "Email unavailable";
+
+        }
+
+
+        // ========================================
+        // VEHICLE
+        // ========================================
 
         if (vehicleNumber) {
 
             vehicleNumber.textContent =
-                user.vehicleNumber;
+                user.vehicleNumber ||
+                "Vehicle number unavailable";
 
         }
 
@@ -154,24 +254,70 @@ async function loadProfile() {
         if (vehicleModel) {
 
             vehicleModel.textContent =
-                user.vehicleModel;
+                user.vehicleModel ||
+                "Vehicle model unavailable";
 
         }
 
 
-        // Charging Type
+        if (profileDropdownVehicle) {
 
-        if (chargingType) {
-
-            chargingType.textContent =
-                "EV Charging";
+            profileDropdownVehicle.textContent =
+                user.vehicleNumber ||
+                "Not available";
 
         }
 
+
+        // ========================================
+        // BATTERY
+        // ========================================
+
+        const battery =
+            Number(user.batteryPercentage);
+
+
+        if (!isNaN(battery)) {
+
+            if (batteryValue) {
+
+                batteryValue.textContent =
+                    `${battery}%`;
+
+            }
+
+
+            if (batteryLarge) {
+
+                batteryLarge.textContent =
+                    `${battery}%`;
+
+            }
+
+
+            if (batteryProgress) {
+
+                batteryProgress.style.width =
+                    `${battery}%`;
+
+            }
+
+
+            if (profileDropdownBattery) {
+
+                profileDropdownBattery.textContent =
+                    `${battery}%`;
+
+            }
+
+        }
 
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Profile connection error:",
+            error
+        );
 
     }
 
@@ -190,6 +336,8 @@ async function loadBookings() {
             await fetch(
                 `${API_URL}/api/bookings/my-bookings`,
                 {
+                    method: "GET",
+
                     headers: {
                         Authorization:
                             `Bearer ${token}`
@@ -204,8 +352,12 @@ async function loadBookings() {
 
         if (!response.ok) {
 
-            return;
+            console.log(
+                "Booking error:",
+                data.message
+            );
 
+            return;
         }
 
 
@@ -213,20 +365,26 @@ async function loadBookings() {
             data.bookings || [];
 
 
+        const activeBookings =
+            bookings.filter(
+                booking =>
+                    booking.status === "Booked"
+            );
+
+
         if (bookingCount) {
 
             bookingCount.textContent =
-                bookings.filter(
-                    booking =>
-                        booking.status === "Booked"
-                ).length;
+                activeBookings.length;
 
         }
 
-
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Booking connection error:",
+            error
+        );
 
     }
 
@@ -245,6 +403,8 @@ async function loadNotifications() {
             await fetch(
                 `${API_URL}/api/notifications`,
                 {
+                    method: "GET",
+
                     headers: {
                         Authorization:
                             `Bearer ${token}`
@@ -259,14 +419,22 @@ async function loadNotifications() {
 
         if (!response.ok) {
 
-            return;
+            console.log(
+                "Notification error:",
+                data.message
+            );
 
+            return;
         }
 
 
         const notifications =
             data.notifications || [];
 
+
+        // ========================================
+        // UNREAD COUNT
+        // ========================================
 
         const unread =
             notifications.filter(
@@ -283,64 +451,131 @@ async function loadNotifications() {
         }
 
 
-        // Recent notifications
+        if (!notificationList) {
 
-        if (notificationList) {
-
-            notificationList.innerHTML = "";
-
-
-            notifications
-                .slice(0, 4)
-                .forEach(
-                    function (notification) {
-
-                        const item =
-                            document.createElement(
-                                "div"
-                            );
-
-                        item.className =
-                            "dashboard-notification";
-
-
-                        item.innerHTML = `
-
-                            <div>
-
-                                <strong>
-                                    ${notification.title}
-                                </strong>
-
-                                <p>
-                                    ${notification.message}
-                                </p>
-
-                            </div>
-
-                            <span>
-                                ${
-                                    notification.isRead
-                                        ? "Read"
-                                        : "New"
-                                }
-                            </span>
-
-                        `;
-
-
-                        notificationList
-                            .appendChild(item);
-
-                    }
-                );
+            return;
 
         }
 
 
+        notificationList.innerHTML = "";
+
+
+        // ========================================
+        // NO NOTIFICATIONS
+        // ========================================
+
+        if (notifications.length === 0) {
+
+            notificationList.innerHTML = `
+                <div class="dashboard-empty">
+
+                    <h3>
+                        No recent notifications
+                    </h3>
+
+                    <p>
+                        You're all caught up.
+                    </p>
+
+                </div>
+            `;
+
+            return;
+        }
+
+
+        // ========================================
+        // DISPLAY RECENT NOTIFICATIONS
+        // ========================================
+
+        notifications
+            .slice(0, 4)
+            .forEach(
+                function (notification) {
+
+                    const item =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    item.className =
+                        "dashboard-notification";
+
+
+                    let icon =
+                        "🔔";
+
+
+                    if (
+                        notification.type ===
+                        "Booking"
+                    ) {
+
+                        icon = "📅";
+
+                    } else if (
+                        notification.type ===
+                        "Queue"
+                    ) {
+
+                        icon = "⏳";
+
+                    } else if (
+                        notification.type ===
+                        "Reminder"
+                    ) {
+
+                        icon = "⏰";
+
+                    }
+
+
+                    item.innerHTML = `
+
+                        <div class="notification-icon">
+                            ${icon}
+                        </div>
+
+
+                        <div class="notification-content">
+
+                            <strong>
+                                ${notification.title}
+                            </strong>
+
+                            <p>
+                                ${notification.message}
+                            </p>
+
+                        </div>
+
+
+                        <span class="notification-status">
+                            ${
+                                notification.isRead
+                                    ? "Read"
+                                    : "New"
+                            }
+                        </span>
+
+                    `;
+
+
+                    notificationList.appendChild(
+                        item
+                    );
+
+                }
+            );
+
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Notification connection error:",
+            error
+        );
 
     }
 
@@ -354,8 +589,17 @@ async function loadNotifications() {
 async function loadStations() {
 
     if (!stationList) {
+
         return;
+
     }
+
+
+    stationList.innerHTML = `
+        <div class="loading">
+            Loading charging stations...
+        </div>
+    `;
 
 
     try {
@@ -364,6 +608,8 @@ async function loadStations() {
             await fetch(
                 `${API_URL}/api/stations`,
                 {
+                    method: "GET",
+
                     headers: {
                         Authorization:
                             `Bearer ${token}`
@@ -378,8 +624,26 @@ async function loadStations() {
 
         if (!response.ok) {
 
-            return;
+            stationList.innerHTML = `
 
+                <div class="dashboard-empty">
+
+                    <h3>
+                        Unable to load stations
+                    </h3>
+
+                    <p>
+                        ${
+                            data.message ||
+                            "Please try again."
+                        }
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
         }
 
 
@@ -387,7 +651,34 @@ async function loadStations() {
             data.stations || [];
 
 
+        // ========================================
+        // DISPLAY ALL STATIONS
+        // ========================================
+
         stationList.innerHTML = "";
+
+
+        if (stations.length === 0) {
+
+            stationList.innerHTML = `
+
+                <div class="dashboard-empty">
+
+                    <h3>
+                        No charging stations
+                    </h3>
+
+                    <p>
+                        No stations are available currently.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
 
 
         stations
@@ -400,51 +691,112 @@ async function loadStations() {
                             "div"
                         );
 
+
                     card.className =
                         "dashboard-station-card";
 
 
-                    const status =
-                        station.availableSlots > 0
-                            ? "Available"
-                            : "Full";
+                    const isAvailable =
+                        station.availableSlots > 0;
 
 
                     card.innerHTML = `
 
-                        <div>
+                        <div class="dashboard-station-info">
 
-                            <h3>
-                                ${station.name}
-                            </h3>
+                            <div class="station-mini-icon">
+                                ⚡
+                            </div>
 
-                            <p>
-                                📍 ${station.address}
-                            </p>
+
+                            <div>
+
+                                <h3>
+                                    ${station.name}
+                                </h3>
+
+                                <p>
+                                    📍 ${station.address}
+                                </p>
+
+                                <span>
+                                    ${station.chargingType}
+                                </span>
+
+                            </div>
 
                         </div>
 
 
-                        <div>
+                        <div class="dashboard-station-right">
 
                             <strong>
-                                ${station.availableSlots}
-                                /
-                                ${station.totalSlots}
-                                slots
+                                ${
+                                    station.availableSlots
+                                }/${station.totalSlots}
                             </strong>
 
-                            <span>
-                                ${status}
+
+                            <span
+                                class="${
+                                    isAvailable
+                                        ? "available"
+                                        : "full"
+                                }"
+                            >
+                                ${
+                                    isAvailable
+                                        ? "Available"
+                                        : "Full"
+                                }
                             </span>
+
+
+                            <button
+                                class="mini-book-btn"
+                            >
+                                ${
+                                    isAvailable
+                                        ? "Book →"
+                                        : "Join Queue →"
+                                }
+                            </button>
 
                         </div>
 
                     `;
 
 
-                    stationList
-                        .appendChild(card);
+                    const bookBtn =
+                        card.querySelector(
+                            ".mini-book-btn"
+                        );
+
+
+                    if (bookBtn) {
+
+                        bookBtn.addEventListener(
+                            "click",
+                            function () {
+
+                                localStorage.setItem(
+                                    "selectedStationId",
+                                    station._id
+                                );
+
+
+                                window.location.href =
+                                    `./booking.html?stationId=${station._id}`;
+
+                            }
+                        );
+
+                    }
+
+
+                    stationList.appendChild(
+                        card
+                    );
 
                 }
             );
@@ -452,7 +804,28 @@ async function loadStations() {
 
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Station connection error:",
+            error
+        );
+
+
+        stationList.innerHTML = `
+
+            <div class="dashboard-empty">
+
+                <h3>
+                    Unable to connect
+                </h3>
+
+                <p>
+                    Please make sure the backend
+                    server is running.
+                </p>
+
+            </div>
+
+        `;
 
     }
 
@@ -460,89 +833,8 @@ async function loadStations() {
 
 
 // ========================================
-// VIEW ALL STATIONS
+// FIND BEST STATION
 // ========================================
-
-const viewStationsBtn =
-    document.getElementById(
-        "viewStationsBtn"
-    );
-
-
-if (viewStationsBtn) {
-
-    viewStationsBtn.addEventListener(
-        "click",
-        function () {
-
-            window.location.href =
-                "stations.html";
-
-        }
-    );
-
-}
-
-
-// ========================================
-// VIEW NOTIFICATIONS
-// ========================================
-
-const viewNotificationsBtn =
-    document.getElementById(
-        "viewNotificationsBtn"
-    );
-
-
-if (viewNotificationsBtn) {
-
-    viewNotificationsBtn.addEventListener(
-        "click",
-        function () {
-
-            window.location.href =
-                "notifications.html";
-
-        }
-    );
-
-}
-
-
-// ========================================
-// BOOK SLOT
-// ========================================
-
-const bookSlotBtn =
-    document.getElementById(
-        "bookSlotBtn"
-    );
-
-
-if (bookSlotBtn) {
-
-    bookSlotBtn.addEventListener(
-        "click",
-        function () {
-
-            window.location.href =
-                "stations.html";
-
-        }
-    );
-
-}
-
-
-// ========================================
-// RECOMMEND STATION
-// ========================================
-
-const recommendBtn =
-    document.getElementById(
-        "recommendBtn"
-    );
-
 
 if (recommendBtn) {
 
@@ -550,16 +842,43 @@ if (recommendBtn) {
         "click",
         async function () {
 
+            recommendBtn.disabled =
+                true;
+
+
             recommendBtn.textContent =
-                "Finding Best Station...";
+                "Finding best station...";
+
+
+            if (recommendation) {
+
+                recommendation.innerHTML = `
+
+                    <div class="loading">
+                        Analyzing nearby stations...
+                    </div>
+
+                `;
+
+            }
 
 
             try {
 
+                const latitude =
+                    13.6288;
+
+
+                const longitude =
+                    79.4192;
+
+
                 const response =
                     await fetch(
-                        `${API_URL}/api/stations/recommend?latitude=13.6288&longitude=79.4192`,
+                        `${API_URL}/api/stations/recommend?latitude=${latitude}&longitude=${longitude}`,
                         {
+                            method: "GET",
+
                             headers: {
                                 Authorization:
                                     `Bearer ${token}`
@@ -574,10 +893,38 @@ if (recommendBtn) {
 
                 if (!response.ok) {
 
-                    alert(
-                        data.message ||
-                        "Unable to generate recommendation."
-                    );
+                    if (recommendation) {
+
+                        recommendation.innerHTML = `
+
+                            <div class="dashboard-empty">
+
+                                <h3>
+                                    No recommendation available
+                                </h3>
+
+                                <p>
+                                    ${
+                                        data.message ||
+                                        "No suitable station found."
+                                    }
+                                </p>
+
+                            </div>
+
+                        `;
+
+                    }
+
+                    return;
+                }
+
+
+                const best =
+                    data.recommendedStation;
+
+
+                if (!best) {
 
                     return;
 
@@ -585,27 +932,190 @@ if (recommendBtn) {
 
 
                 const station =
-                    data.recommendedStation;
+                    best.station;
 
 
-                alert(
-                    `Recommended Station: ${station.station.name}\n\nDistance: ${station.distance} km\nAvailable Slots: ${station.availableSlots}\nEstimated Wait: ${station.estimatedWaitTime} minutes`
-                );
+                if (recommendation) {
 
+                    recommendation.innerHTML = `
+
+                        <div class="recommendation-card">
+
+                            <div class="recommendation-top">
+
+                                <div>
+
+                                    <span class="recommendation-label">
+                                        ⭐ BEST MATCH FOR YOUR BATTERY
+                                    </span>
+
+                                    <h3>
+                                        ${station.name}
+                                    </h3>
+
+                                    <p>
+                                        📍 ${station.address}
+                                    </p>
+
+                                </div>
+
+
+                                <div class="recommendation-score">
+                                    ${best.score}
+                                </div>
+
+                            </div>
+
+
+                            <div class="recommendation-grid">
+
+                                <div>
+                                    <span>
+                                        📍 Distance
+                                    </span>
+
+                                    <strong>
+                                        ${best.distance} km
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        🔌 Available Slots
+                                    </span>
+
+                                    <strong>
+                                        ${best.availableSlots}
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        👥 Waiting Users
+                                    </span>
+
+                                    <strong>
+                                        ${best.waitingUsers}
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        ⏱ Estimated Wait
+                                    </span>
+
+                                    <strong>
+                                        ${best.estimatedWaitTime} min
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        ⚡ Charging Type
+                                    </span>
+
+                                    <strong>
+                                        ${station.chargingType}
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        💰 Price
+                                    </span>
+
+                                    <strong>
+                                        ₹${station.pricePerUnit}/unit
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                class="recommendation-book-btn"
+                                id="recommendationBookBtn"
+                            >
+                                Book This Station →
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    const recommendationBookBtn =
+                        document.getElementById(
+                            "recommendationBookBtn"
+                        );
+
+
+                    if (recommendationBookBtn) {
+
+                        recommendationBookBtn.addEventListener(
+                            "click",
+                            function () {
+
+                                localStorage.setItem(
+                                    "selectedStationId",
+                                    station._id
+                                );
+
+
+                                window.location.href =
+                                    `./booking.html?stationId=${station._id}`;
+
+                            }
+                        );
+
+                    }
+
+                }
 
             } catch (error) {
 
-                console.log(error);
-
-                alert(
-                    "Unable to connect to backend."
+                console.log(
+                    "Recommendation error:",
+                    error
                 );
 
+
+                if (recommendation) {
+
+                    recommendation.innerHTML = `
+
+                        <div class="dashboard-empty">
+
+                            <h3>
+                                Unable to connect
+                            </h3>
+
+                            <p>
+                                Please make sure the backend
+                                server is running.
+                            </p>
+
+                        </div>
+
+                    `;
+
+                }
+
+            } finally {
+
+                recommendBtn.disabled =
+                    false;
+
+
+                recommendBtn.textContent =
+                    "⚡ Find Best Charging Station";
+
             }
-
-
-            recommendBtn.textContent =
-                "Find Best Station";
 
         }
     );
@@ -614,30 +1124,91 @@ if (recommendBtn) {
 
 
 // ========================================
-// LOGOUT
+// VIEW ALL STATIONS
+// ========================================
+
+if (viewAllStations) {
+
+    viewAllStations.addEventListener(
+        "click",
+        function () {
+
+            window.location.href =
+                "./stations.html";
+
+        }
+    );
+
+}
+
+
+// ========================================
+// VIEW ALL NOTIFICATIONS
+// ========================================
+
+if (viewNotifications) {
+
+    viewNotifications.addEventListener(
+        "click",
+        function () {
+
+            window.location.href =
+                "./notifications.html";
+
+        }
+    );
+
+}
+
+
+// ========================================
+// LOGOUT FUNCTION
+// ========================================
+
+function logoutUser() {
+
+    localStorage.removeItem(
+        "token"
+    );
+
+    localStorage.removeItem(
+        "userId"
+    );
+
+    localStorage.removeItem(
+        "selectedStationId"
+    );
+
+    window.location.href =
+        "./login.html";
+}
+
+
+// ========================================
+// SIDEBAR LOGOUT
 // ========================================
 
 if (logoutBtn) {
 
     logoutBtn.addEventListener(
         "click",
+        logoutUser
+    );
+
+}
+
+
+// ========================================
+// PROFILE DROPDOWN LOGOUT
+// ========================================
+
+if (profileLogoutBtn) {
+
+    profileLogoutBtn.addEventListener(
+        "click",
         function () {
 
-            localStorage.removeItem(
-                "token"
-            );
-
-            localStorage.removeItem(
-                "userId"
-            );
-
-            localStorage.removeItem(
-                "selectedStationId"
-            );
-
-
-            window.location.href =
-                "login.html";
+            logoutUser();
 
         }
     );
@@ -646,7 +1217,7 @@ if (logoutBtn) {
 
 
 // ========================================
-// START DASHBOARD
+// INITIAL LOAD
 // ========================================
 
 loadProfile();

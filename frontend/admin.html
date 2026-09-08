@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EVCharge | Admin Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body class="dashboard-page">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+        <div class="dashboard-logo">
+            ⚡ EVCharge
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <a href="admin.html" class="active">
+                📊 Dashboard
+            </a>
+
+            <a href="stations.html">
+                📍 Stations
+            </a>
+
+            <a href="bookings.html">
+                📅 Bookings
+            </a>
+
+            <a href="notifications.html">
+                🔔 Notifications
+            </a>
+
+        </nav>
+
+
+        <button id="adminLogoutBtn" class="logout-btn">
+            ↪ Logout
+        </button>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="dashboard-main">
+
+
+        <!-- TOP BAR -->
+
+        <div class="dashboard-topbar">
+
+            <div>
+
+                <p class="welcome-small">
+                    EVCHARGE ADMIN
+                </p>
+
+                <h1>
+                    Admin Dashboard
+                </h1>
+
+            </div>
+
+
+            <div class="admin-profile">
+
+                <div
+                    id="adminInitial"
+                    class="profile-circle"
+                >
+                    A
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =========================
+             WELCOME SECTION
+        ========================== -->
+
+        <section class="dashboard-welcome">
+
+            <div>
+
+                <span>
+                    MANAGEMENT PANEL
+                </span>
+
+                <h2>
+                    Welcome,
+                    <span id="adminName">
+                        Admin
+                    </span>
+                    👋
+                </h2>
+
+                <p>
+                    Monitor EV charging activity,
+                    stations, bookings and queues
+                    from one place.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             STATISTICS
+        ========================== -->
+
+        <section class="stats-grid">
+
+
+            <!-- TOTAL USERS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    👥
+                </div>
+
+                <div>
+
+                    <p>
+                        Total Users
+                    </p>
+
+                    <h2 id="totalUsers">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL STATIONS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📍
+                </div>
+
+                <div>
+
+                    <p>
+                        Total Stations
+                    </p>
+
+                    <h2 id="totalStations">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TOTAL BOOKINGS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    📅
+                </div>
+
+                <div>
+
+                    <p>
+                        Total Bookings
+                    </p>
+
+                    <h2 id="totalBookings">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- ACTIVE BOOKINGS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⚡
+                </div>
+
+                <div>
+
+                    <p>
+                        Active Bookings
+                    </p>
+
+                    <h2 id="activeBookings">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- WAITING USERS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <p>
+                        Waiting Users
+                    </p>
+
+                    <h2 id="waitingUsers">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- AVAILABLE SLOTS -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    🔋
+                </div>
+
+                <div>
+
+                    <p>
+                        Available Slots
+                    </p>
+
+                    <h2 id="availableSlots">
+                        --
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             SLOT OVERVIEW
+        ========================== -->
+
+        <section class="admin-overview-card">
+
+
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <span>
+                        CHARGING NETWORK
+                    </span>
+
+                    <h2>
+                        Slot Overview
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="slot-overview">
+
+
+                <div>
+
+                    <p>
+                        Total Charging Slots
+                    </p>
+
+                    <strong id="totalSlots">
+                        --
+                    </strong>
+
+                </div>
+
+
+
+                <div>
+
+                    <p>
+                        Currently Available
+                    </p>
+
+                    <strong id="overviewAvailableSlots">
+                        --
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             USER BOOKING INFORMATION
+        ========================== -->
+
+        <section class="admin-overview-card">
+
+
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <span>
+                        BOOKING INFORMATION
+                    </span>
+
+                    <h2>
+                        Recent User Bookings
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- TABLE -->
+
+            <div class="table-container">
+
+
+                <table class="admin-booking-table">
+
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                User
+                            </th>
+
+                            <th>
+                                Vehicle
+                            </th>
+
+                            <th>
+                                Station
+                            </th>
+
+                            <th>
+                                Slot Time
+                            </th>
+
+                            <th>
+                                Duration
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody
+                        id="adminBookingsTableBody"
+                    >
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                            >
+                                Loading bookings...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             QUICK ACTIONS
+        ========================== -->
+
+        <section class="admin-overview-card">
+
+
+            <div class="admin-section-heading">
+
+                <div>
+
+                    <span>
+                        MANAGEMENT
+                    </span>
+
+                    <h2>
+                        Quick Actions
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="admin-actions">
+
+
+                <button
+                    id="addStationBtn"
+                    class="admin-action-btn"
+                >
+
+                    ➕ Add Charging Station
+
+                </button>
+
+
+
+                <a
+                    href="stations.html"
+                    class="admin-action-btn"
+                >
+
+                    📍 View Stations
+
+                </a>
+
+
+
+                <a
+                    href="bookings.html"
+                    class="admin-action-btn"
+                >
+
+                    📅 View Bookings
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="js/admin.js"></script>
+
+
+</body>
+
+</html>

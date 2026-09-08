@@ -3,7 +3,6 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    createNotification,
     getMyNotifications,
     markAsRead,
     markAllAsRead
@@ -11,16 +10,38 @@ const {
 
 const authMiddleware = require("../middleware/authMiddleware");
 
-// Create notification
-router.post("/", authMiddleware, createNotification);
 
-// Get my notifications
-router.get("/", authMiddleware, getMyNotifications);
+// ========================================
+// GET MY NOTIFICATIONS
+// ========================================
 
-// Mark one notification as read
-router.put("/read/:id", authMiddleware, markAsRead);
+router.get(
+    "/",
+    authMiddleware,
+    getMyNotifications
+);
 
-// Mark all notifications as read
-router.put("/read-all", authMiddleware, markAllAsRead);
+
+// ========================================
+// MARK ONE NOTIFICATION AS READ
+// ========================================
+
+router.put(
+    "/read/:id",
+    authMiddleware,
+    markAsRead
+);
+
+
+// ========================================
+// MARK ALL NOTIFICATIONS AS READ
+// ========================================
+
+router.put(
+    "/read-all",
+    authMiddleware,
+    markAllAsRead
+);
+
 
 module.exports = router;

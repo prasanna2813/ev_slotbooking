@@ -1,5 +1,5 @@
 // ========================================
-// EVCHARGE - MY BOOKINGS
+// EVCHARGE - BOOKING
 // ========================================
 
 const API_URL = "http://localhost:5000";
@@ -12,7 +12,29 @@ const token = localStorage.getItem("token");
 // ========================================
 
 if (!token) {
-    window.location.href = "login.html";
+    window.location.href = "./login.html";
+}
+
+
+// ========================================
+// GET STATION ID
+// ========================================
+
+const urlParams =
+    new URLSearchParams(window.location.search);
+
+const stationIdFromURL =
+    urlParams.get("stationId");
+
+const selectedStationId =
+    stationIdFromURL ||
+    localStorage.getItem("selectedStationId");
+
+
+if (!selectedStationId) {
+
+    window.location.href =
+        "./stations.html";
 }
 
 
@@ -20,553 +42,249 @@ if (!token) {
 // ELEMENTS
 // ========================================
 
-const bookingList =
-    document.getElementById("bookingList");
+const stationName =
+    document.getElementById("stationName");
 
-const bookingLoading =
-    document.getElementById("bookingLoading");
+const stationDetails =
+    document.getElementById("stationDetails");
 
-const emptyBookings =
-    document.getElementById("emptyBookings");
+const bookingSection =
+    document.getElementById("bookingSection");
 
-const totalBookings =
-    document.getElementById("totalBookings");
+const queueSection =
+    document.getElementById("queueSection");
 
-const activeBookings =
-    document.getElementById("activeBookings");
+const bookingForm =
+    document.getElementById("bookingForm");
 
-const completedBookings =
-    document.getElementById("completedBookings");
+const slotTime =
+    document.getElementById("slotTime");
+
+const duration =
+    document.getElementById("duration");
+
+const vehicleNumber =
+    document.getElementById("vehicleNumber");
+
+const bookBtn =
+    document.getElementById("bookBtn");
+
+const bookingMessage =
+    document.getElementById("bookingMessage");
+
+const joinQueueBtn =
+    document.getElementById("joinQueueBtn");
+
+const queueMessage =
+    document.getElementById("queueMessage");
 
 const logoutBtn =
     document.getElementById("logoutBtn");
 
 
 // ========================================
-// LOAD MY BOOKINGS
+// LOAD USER PROFILE
 // ========================================
 
-async function loadBookings() {
-
-    bookingLoading.style.display = "block";
-
-    bookingList.innerHTML = "";
-
-    emptyBookings.style.display = "none";
-
+async function loadProfile() {
 
     try {
 
-        const response = await fetch(
-            `${API_URL}/api/bookings/my-bookings`,
-            {
-                method: "GET",
+        const response =
+            await fetch(
+                `${API_URL}/api/auth/profile`,
+                {
+                    method: "GET",
 
-                headers: {
-                    Authorization:
-                        `Bearer ${token}`
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
                 }
-            }
-        );
-
+            );
 
         const data =
             await response.json();
 
-
         if (!response.ok) {
-
-            bookingLoading.innerHTML = `
-                <p>
-                    ${
-                        data.message ||
-                        "Failed to load bookings."
-                    }
-                </p>
-            `;
-
             return;
         }
 
+        if (vehicleNumber) {
 
-        const bookings =
-            data.bookings || [];
+            vehicleNumber.value =
+                data.user.vehicleNumber || "";
 
-
-        bookingLoading.style.display =
-            "none";
-
-
-        // ========================================
-        // UPDATE SUMMARY
-        // ========================================
-
-        totalBookings.textContent =
-            bookings.length;
-
-
-        const activeCount =
-            bookings.filter(
-                booking =>
-                    booking.status === "Booked"
-            ).length;
-
-
-        const completedCount =
-            bookings.filter(
-                booking =>
-                    booking.status === "Completed"
-            ).length;
-
-
-        activeBookings.textContent =
-            activeCount;
-
-
-        completedBookings.textContent =
-            completedCount;
-
-
-        // ========================================
-        // EMPTY BOOKINGS
-        // ========================================
-
-        if (bookings.length === 0) {
-
-            emptyBookings.style.display =
-                "block";
-
-            return;
         }
-
-
-        // ========================================
-        // DISPLAY BOOKINGS
-        // ========================================
-
-        bookings.forEach(
-            function (booking) {
-
-                const card =
-                    createBookingCard(booking);
-
-                bookingList.appendChild(card);
-
-            }
-        );
-
 
     } catch (error) {
 
-        console.log(error);
+        console.log(
+            "Profile error:",
+            error
+        );
 
-        bookingLoading.innerHTML = `
-            <div class="empty-state">
+    }
+
+}
+
+
+// ========================================
+// LOAD STATION
+// ========================================
+
+async function loadStation() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/api/stations/${selectedStationId}`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            stationDetails.innerHTML = `
+
+                <div class="dashboard-empty">
+
+                    <h3>
+                        Station not found
+                    </h3>
+
+                    <p>
+                        ${
+                            data.message ||
+                            "Unable to load station."
+                        }
+                    </p>
+
+                </div>
+
+            `;
+
+            bookingSection.style.display =
+                "none";
+
+            return;
+        }
+
+        const station =
+            data.station;
+
+        // STATION NAME
+
+        stationName.textContent =
+            station.name;
+
+
+        // STATION DETAILS
+
+        stationDetails.innerHTML = `
+
+            <div class="dashboard-station-card">
+
+                <div class="dashboard-station-info">
+
+                    <div class="station-mini-icon">
+                        ⚡
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            ${station.name}
+                        </h3>
+
+                        <p>
+                            📍 ${station.address}
+                        </p>
+
+                        <span>
+                            ${station.chargingType}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="dashboard-station-right">
+
+                    <strong>
+                        ${station.availableSlots}/${station.totalSlots}
+                    </strong>
+
+                    <span class="available">
+                        Available Slots
+                    </span>
+
+                    <span>
+                        ₹${station.pricePerUnit}/unit
+                    </span>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        // ========================================
+        // CHECK AVAILABILITY
+        // ========================================
+
+        if (station.availableSlots > 0) {
+
+            bookingSection.style.display =
+                "block";
+
+            queueSection.style.display =
+                "none";
+
+        } else {
+
+            bookingSection.style.display =
+                "none";
+
+            queueSection.style.display =
+                "block";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Station loading error:",
+            error
+        );
+
+        stationDetails.innerHTML = `
+
+            <div class="dashboard-empty">
 
                 <h3>
                     Unable to connect
                 </h3>
 
                 <p>
-                    Please make sure the backend
-                    server is running.
-                </p>
-
-            </div>
-        `;
-
-    }
-
-}
-
-
-// ========================================
-// CREATE BOOKING CARD
-// ========================================
-
-function createBookingCard(booking) {
-
-    const card =
-        document.createElement("div");
-
-    card.className =
-        "booking-card";
-
-
-    // ========================================
-    // STATION DETAILS
-    // ========================================
-
-    const station =
-        booking.stationId;
-
-
-    const stationName =
-        station && station.name
-            ? station.name
-            : "Charging Station";
-
-
-    const stationAddress =
-        station && station.address
-            ? station.address
-            : "Address unavailable";
-
-
-    const chargingType =
-        station && station.chargingType
-            ? station.chargingType
-            : "EV Charging";
-
-
-    // ========================================
-    // DATE & TIME
-    // ========================================
-
-    const bookingDate =
-        new Date(booking.slotTime);
-
-
-    const dateText =
-        bookingDate.toLocaleDateString(
-            "en-IN",
-            {
-                day: "2-digit",
-                month: "short",
-                year: "numeric"
-            }
-        );
-
-
-    const timeText =
-        bookingDate.toLocaleTimeString(
-            "en-IN",
-            {
-                hour: "2-digit",
-                minute: "2-digit"
-            }
-        );
-
-
-    // ========================================
-    // STATUS
-    // ========================================
-
-    let statusClass = "";
-
-
-    if (booking.status === "Booked") {
-
-        statusClass = "booking-active";
-
-    } else if (
-        booking.status === "Completed"
-    ) {
-
-        statusClass = "booking-completed";
-
-    } else {
-
-        statusClass = "booking-cancelled";
-
-    }
-
-
-    // ========================================
-    // ACTION BUTTONS
-    // ========================================
-
-    let actionButtons = "";
-
-
-    if (booking.status === "Booked") {
-
-        actionButtons = `
-
-            <button
-                class="booking-action-btn complete-btn"
-                data-id="${booking._id}"
-            >
-                ✓ Complete
-            </button>
-
-            <button
-                class="booking-action-btn cancel-btn"
-                data-id="${booking._id}"
-            >
-                ✕ Cancel
-            </button>
-
-        `;
-
-    } else if (
-        booking.status === "Completed"
-    ) {
-
-        actionButtons = `
-
-            <span class="booking-finished">
-                ✓ Charging Completed
-            </span>
-
-        `;
-
-    } else {
-
-        actionButtons = `
-
-            <span class="booking-finished">
-                ✕ Booking Cancelled
-            </span>
-
-        `;
-
-    }
-
-
-    // ========================================
-    // CARD HTML
-    // ========================================
-
-    card.innerHTML = `
-
-        <div class="booking-card-header">
-
-            <div>
-
-                <span class="booking-label">
-                    EV CHARGING
-                </span>
-
-                <h3>
-                    ${stationName}
-                </h3>
-
-                <p>
-                    📍 ${stationAddress}
+                    Please make sure the backend server is running.
                 </p>
 
             </div>
 
-
-            <span
-                class="booking-status ${statusClass}"
-            >
-                ${booking.status}
-            </span>
-
-        </div>
-
-
-        <div class="booking-card-details">
-
-            <div class="booking-detail">
-
-                <span>
-                    📅 Date
-                </span>
-
-                <strong>
-                    ${dateText}
-                </strong>
-
-            </div>
-
-
-            <div class="booking-detail">
-
-                <span>
-                    🕒 Time
-                </span>
-
-                <strong>
-                    ${timeText}
-                </strong>
-
-            </div>
-
-
-            <div class="booking-detail">
-
-                <span>
-                    ⏱ Duration
-                </span>
-
-                <strong>
-                    ${booking.duration} min
-                </strong>
-
-            </div>
-
-
-            <div class="booking-detail">
-
-                <span>
-                    ⚡ Charging
-                </span>
-
-                <strong>
-                    ${chargingType}
-                </strong>
-
-            </div>
-
-
-            <div class="booking-detail">
-
-                <span>
-                    🚗 Vehicle
-                </span>
-
-                <strong>
-                    ${booking.vehicleNumber}
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="booking-card-footer">
-
-            <small>
-                Booking ID:
-                ${booking._id}
-            </small>
-
-
-            <div class="booking-actions">
-
-                ${actionButtons}
-
-            </div>
-
-        </div>
-
-    `;
-
-
-    // ========================================
-    // COMPLETE BUTTON
-    // ========================================
-
-    const completeBtn =
-        card.querySelector(
-            ".complete-btn"
-        );
-
-
-    if (completeBtn) {
-
-        completeBtn.addEventListener(
-            "click",
-            function () {
-
-                completeBooking(
-                    booking._id
-                );
-
-            }
-        );
-
-    }
-
-
-    // ========================================
-    // CANCEL BUTTON
-    // ========================================
-
-    const cancelBtn =
-        card.querySelector(
-            ".cancel-btn"
-        );
-
-
-    if (cancelBtn) {
-
-        cancelBtn.addEventListener(
-            "click",
-            function () {
-
-                cancelBooking(
-                    booking._id
-                );
-
-            }
-        );
-
-    }
-
-
-    return card;
-
-}
-
-
-// ========================================
-// COMPLETE BOOKING
-// ========================================
-
-async function completeBooking(
-    bookingId
-) {
-
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to complete this booking?"
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        const response = await fetch(
-            `${API_URL}/api/bookings/complete/${bookingId}`,
-            {
-                method: "PUT",
-
-                headers: {
-                    Authorization:
-                        `Bearer ${token}`
-                }
-            }
-        );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                data.message ||
-                "Unable to complete booking."
-            );
-
-            return;
-        }
-
-
-        alert(
-            "Charging session completed successfully!"
-        );
-
-
-        await loadBookings();
-
-
-    } catch (error) {
-
-        console.log(error);
-
-        alert(
-            "Unable to connect to backend."
-        );
+        `;
 
     }
 
@@ -574,71 +292,456 @@ async function completeBooking(
 
 
 // ========================================
-// CANCEL BOOKING
+// SET MINIMUM DATE/TIME
 // ========================================
 
-async function cancelBooking(
-    bookingId
-) {
+function setMinimumDateTime() {
 
-    const confirmed =
-        window.confirm(
-            "Are you sure you want to cancel this booking?"
-        );
-
-
-    if (!confirmed) {
+    if (!slotTime) {
         return;
     }
 
+    const now =
+        new Date();
 
-    try {
+    now.setMinutes(
+        now.getMinutes() -
+        now.getTimezoneOffset()
+    );
 
-        const response = await fetch(
-            `${API_URL}/api/bookings/cancel/${bookingId}`,
-            {
-                method: "PUT",
+    const minimum =
+        now.toISOString()
+            .slice(0, 16);
 
-                headers: {
-                    Authorization:
-                        `Bearer ${token}`
-                }
+    slotTime.min =
+        minimum;
+
+}
+
+
+// ========================================
+// BOOK SLOT
+// ========================================
+
+if (bookingForm) {
+
+    bookingForm.addEventListener(
+        "submit",
+        async function (event) {
+
+            event.preventDefault();
+
+            const selectedTime =
+                slotTime.value;
+
+            const selectedDuration =
+                Number(duration.value);
+
+            const vehicle =
+                vehicleNumber.value.trim();
+
+
+            // VALIDATION
+
+            if (!selectedTime) {
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Select date and time
+                        </h3>
+
+                    </div>
+
+                `;
+
+                return;
             }
-        );
 
 
-        const data =
-            await response.json();
+            if (
+                !selectedDuration ||
+                selectedDuration <= 0
+            ) {
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Select charging duration
+                        </h3>
+
+                    </div>
+
+                `;
+
+                return;
+            }
 
 
-        if (!response.ok) {
+            if (!vehicle) {
 
-            alert(
-                data.message ||
-                "Unable to cancel booking."
-            );
+                bookingMessage.innerHTML = `
 
-            return;
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Enter vehicle number
+                        </h3>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            const selectedDate =
+                new Date(selectedTime);
+
+
+            if (
+                isNaN(
+                    selectedDate.getTime()
+                )
+            ) {
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Invalid date and time
+                        </h3>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            if (
+                selectedDate <= new Date()
+            ) {
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Select a future time
+                        </h3>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+            // DISABLE BUTTON
+
+            bookBtn.disabled =
+                true;
+
+            bookBtn.textContent =
+                "Booking...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/bookings`,
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                Authorization:
+                                    `Bearer ${token}`
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    stationId:
+                                        selectedStationId,
+
+                                    slotTime:
+                                        selectedTime,
+
+                                    duration:
+                                        selectedDuration,
+
+                                    vehicleNumber:
+                                        vehicle
+
+                                })
+
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    bookingMessage.innerHTML = `
+
+                        <div class="dashboard-empty">
+
+                            <h3>
+                                Booking failed
+                            </h3>
+
+                            <p>
+                                ${
+                                    data.message ||
+                                    "Unable to create booking."
+                                }
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                // SUCCESS
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            ✅ Booking confirmed
+                        </h3>
+
+                        <p>
+                            Your charging slot has been booked successfully.
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                // GO TO MY BOOKINGS
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "./bookings.html";
+
+                    },
+                    1200
+                );
+
+
+            } catch (error) {
+
+                console.log(
+                    "Booking error:",
+                    error
+                );
+
+                bookingMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Unable to connect
+                        </h3>
+
+                        <p>
+                            Please make sure the backend server is running.
+                        </p>
+
+                    </div>
+
+                `;
+
+            } finally {
+
+                bookBtn.disabled =
+                    false;
+
+                bookBtn.textContent =
+                    "⚡ Confirm Booking";
+
+            }
+
         }
+    );
+
+}
 
 
-        alert(
-            "Booking cancelled successfully!"
-        );
+// ========================================
+// JOIN QUEUE
+// ========================================
+
+if (joinQueueBtn) {
+
+    joinQueueBtn.addEventListener(
+        "click",
+        async function () {
+
+            joinQueueBtn.disabled =
+                true;
+
+            joinQueueBtn.textContent =
+                "Joining Queue...";
 
 
-        await loadBookings();
+            try {
+
+                const response =
+                    await fetch(
+                        `${API_URL}/api/queue`,
+                        {
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                Authorization:
+                                    `Bearer ${token}`
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    stationId:
+                                        selectedStationId
+
+                                })
+
+                        }
+                    );
 
 
-    } catch (error) {
+                const data =
+                    await response.json();
 
-        console.log(error);
 
-        alert(
-            "Unable to connect to backend."
-        );
+                if (!response.ok) {
 
-    }
+                    queueMessage.innerHTML = `
+
+                        <div class="dashboard-empty">
+
+                            <h3>
+                                Unable to join queue
+                            </h3>
+
+                            <p>
+                                ${
+                                    data.message ||
+                                    "Queue request failed."
+                                }
+                            </p>
+
+                        </div>
+
+                    `;
+
+                    return;
+                }
+
+
+                const queue =
+                    data.queue;
+
+
+                queueMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            ⏳ Added to Queue
+                        </h3>
+
+                        <p>
+                            Queue Position:
+                            <strong>
+                                ${queue.position}
+                            </strong>
+                        </p>
+
+                        <p>
+                            Estimated Waiting Time:
+                            <strong>
+                                ${queue.estimatedWaitTime} minutes
+                            </strong>
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                joinQueueBtn.textContent =
+                    "Queue Joined";
+
+
+                joinQueueBtn.disabled =
+                    true;
+
+
+            } catch (error) {
+
+                console.log(
+                    "Queue error:",
+                    error
+                );
+
+                queueMessage.innerHTML = `
+
+                    <div class="dashboard-empty">
+
+                        <h3>
+                            Unable to connect
+                        </h3>
+
+                        <p>
+                            Please make sure the backend server is running.
+                        </p>
+
+                    </div>
+
+                `;
+
+                joinQueueBtn.disabled =
+                    false;
+
+                joinQueueBtn.textContent =
+                    "⏳ Join Charging Queue";
+
+            }
+
+        }
+    );
 
 }
 
@@ -665,9 +768,8 @@ if (logoutBtn) {
                 "selectedStationId"
             );
 
-
             window.location.href =
-                "login.html";
+                "./login.html";
 
         }
     );
@@ -679,4 +781,8 @@ if (logoutBtn) {
 // START
 // ========================================
 
-loadBookings();
+loadProfile();
+
+loadStation();
+
+setMinimumDateTime();
